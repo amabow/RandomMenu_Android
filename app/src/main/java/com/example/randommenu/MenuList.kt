@@ -127,6 +127,7 @@ class MenuList : AppCompatActivity() {
                     }else{
                         break
                     }
+                    cursor.moveToNext()
                 }
             }
             println("---------------\n" + id + "\n---------------")
