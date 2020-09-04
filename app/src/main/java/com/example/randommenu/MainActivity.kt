@@ -3,12 +3,12 @@ package com.example.randommenu
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
+import android.text.util.Linkify
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import java.util.regex.Pattern
 import kotlin.random.Random
 
 
@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     private val dbVersion: Int = 1
 
     private lateinit var menuText: TextView
+    private lateinit var menuText2: TextView
     private lateinit var btnShowMenu: Button
     private lateinit var btnMenu: Button
     private lateinit var btnList: Button
@@ -27,6 +28,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         menuText = findViewById(R.id.text_Menu) as TextView
+        menuText2 = findViewById(R.id.text_Menu_2) as TextView
         btnShowMenu = findViewById(R.id.btn_ShowMenu) as Button
         btnMenu = findViewById(R.id.btn_RandomMenu) as Button
         btnList = findViewById(R.id.btn_MenuList) as Button
@@ -43,11 +45,18 @@ class MainActivity : AppCompatActivity() {
 
             val cursor = database.rawQuery("select * from meal", null)
             val randId: Int = Random.nextInt(0, cursor.count)
-            val cursor1 = database.rawQuery("select menu from meal where id="+randId, null)
+            val cursor1 = database.rawQuery("select menu from meal where id=" + randId, null)
             cursor1.moveToFirst()
             val name: String = cursor1.getString(0)
-            menuText.text = name + "はいかがでしょうか？"
+            val strUrl: String = "https://cookpad.com/search/" + name
+            menuText.text = name + "（Cookpadにとびます）"
+            menuText2.text = "はいかがでしょうか？"
+            val pattern = Pattern.compile(name)
+            val filter =
+                Linkify.TransformFilter { match, url -> strUrl }
+            Linkify.addLinks(menuText, pattern, strUrl, null, filter);
         }
+
     }
 
     private fun insertData(menu: String){

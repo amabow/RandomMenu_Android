@@ -123,13 +123,15 @@ class MenuList : AppCompatActivity() {
                 cursor.moveToFirst()
                 while(!cursor.isAfterLast){
                     if(Integer.parseInt(cursor.getString(0))==id){
+                        println("---------------\ncursor.getString(0): " + cursor.getString(0) + "\n---------------")
                         id++
                     }else{
                         break
                     }
+                    cursor.moveToNext()
                 }
             }
-            println("---------------\n" + id + "\n---------------")
+            println("---------------\nid: " + id + "\n---------------")
             val values = ContentValues()
             values.put("id", id)
             values.put("menu", menu)
