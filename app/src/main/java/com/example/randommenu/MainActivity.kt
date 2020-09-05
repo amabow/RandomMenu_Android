@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.util.Linkify
 import android.util.Log
+import android.webkit.WebView
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     private val tableName: String = "meal"
     private val dbVersion: Int = 1
 
+    private lateinit var webView: WebView
     private lateinit var menuText: TextView
     private lateinit var menuText2: TextView
     private lateinit var btnShowMenu: Button
@@ -28,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        webView = findViewById(R.id.wv) as WebView
         menuText = findViewById(R.id.text_Menu) as TextView
         menuText2 = findViewById(R.id.text_Menu_2) as TextView
         btnShowMenu = findViewById(R.id.btn_ShowMenu) as Button
@@ -60,8 +64,9 @@ class MainActivity : AppCompatActivity() {
                 val name: String = cursor1.getString(0)
                 cursor1.close()
                 val strUrl: String = "https://cookpad.com/search/" + name
+                webView.loadUrl(strUrl)
                 menuText.text = name + " はいかがでしょうか？"
-                menuText2.text = "（" + name + "の作り方:cookpad）"
+                menuText2.text = "（cookpadで作り方を検索）"
                 val pattern = Pattern.compile("cookpad")
                 val filter = Linkify.TransformFilter { match, url -> strUrl }
                 Linkify.addLinks(menuText2, pattern, strUrl, null, filter)
