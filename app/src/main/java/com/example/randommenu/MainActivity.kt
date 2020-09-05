@@ -66,8 +66,8 @@ class MainActivity : AppCompatActivity() {
                 val strUrl: String = "https://cookpad.com/search/" + name
                 webView.loadUrl(strUrl)
                 menuText.text = name + " はいかがでしょうか？"
-                menuText2.text = "（cookpadで作り方を検索）"
-                val pattern = Pattern.compile("cookpad")
+                menuText2.text = "（ブラウザでcookpadを見る）"
+                val pattern = Pattern.compile("ブラウザでcookpadを見る")
                 val filter = Linkify.TransformFilter { match, url -> strUrl }
                 Linkify.addLinks(menuText2, pattern, strUrl, null, filter)
             }
