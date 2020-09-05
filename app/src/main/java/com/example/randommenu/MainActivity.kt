@@ -7,6 +7,7 @@ import android.text.util.Linkify
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import java.util.regex.Pattern
 import kotlin.random.Random
@@ -44,17 +45,27 @@ class MainActivity : AppCompatActivity() {
         btnShowMenu.setOnClickListener {
 
             val cursor = database.rawQuery("select * from meal", null)
-            val randId: Int = Random.nextInt(0, cursor.count)
-            val cursor1 = database.rawQuery("select menu from meal where id=" + randId, null)
-            cursor1.moveToFirst()
-            val name: String = cursor1.getString(0)
-            val strUrl: String = "https://cookpad.com/search/" + name
-            menuText.text = name + "（Cookpadにとびます）"
-            menuText2.text = "はいかがでしょうか？"
-            val pattern = Pattern.compile(name)
-            val filter =
-                Linkify.TransformFilter { match, url -> strUrl }
-            Linkify.addLinks(menuText, pattern, strUrl, null, filter);
+            if(cursor.getCount()==0){
+                cursor.close()
+                AlertDialog.Builder(this).
+                setTitle("エラー").
+                setMessage("料理データがありません。\n\"全メニュー一覧\"から料理を登録してください").
+                setPositiveButton("OK"){
+                        dialog, which ->
+                }.show()
+            }else{
+                val randId: Int = Random.nextInt(0, cursor.count)
+                val cursor1 = database.rawQuery("select menu from meal where id=" + randId, null)
+                cursor1.moveToFirst()
+                val name: String = cursor1.getString(0)
+                cursor1.close()
+                val strUrl: String = "https://cookpad.com/search/" + name
+                menuText.text = name + " はいかがでしょうか？"
+                menuText2.text = "（" + name + "の作り方:cookpad）"
+                val pattern = Pattern.compile("cookpad")
+                val filter = Linkify.TransformFilter { match, url -> strUrl }
+                Linkify.addLinks(menuText2, pattern, strUrl, null, filter)
+            }
         }
 
     }

@@ -85,7 +85,6 @@ class MenuList : AppCompatActivity() {
         }
 
         btnDeleteAll.setOnClickListener {
-            database.rawQuery("delete from meal", null)
             var i: Int = 0
             val arraySize: Int = arrayListMeal.size
             while(i < arraySize){
@@ -93,6 +92,16 @@ class MenuList : AppCompatActivity() {
                 i++
             }
             listViewMeal.adapter = mealAdapter
+            val cursor2 = database.rawQuery("select * from meal;", null)
+            if (cursor2.count > 0) {
+                cursor2.moveToFirst()
+                while (!cursor2.isAfterLast) {
+                    var menu = cursor2.getString(1)
+                    deleteData(menu)
+                    cursor2.moveToNext()
+                }
+            }
+            cursor2.close()
         }
 
         listViewMeal.setOnItemLongClickListener { parent, view, position, id ->
